@@ -53,7 +53,7 @@
 				</div>
 				<div class="form-row">
 					<label for="comfirm_password">CONFIRM PASSWORD</label>
-					<input type="password" name="comfirm_password" id="comfirm_password" class="input-text" required>
+					<input type="password" name="password_confirmation" id="comfirm_password" class="input-text" required>
 				</div>
 				<div class="form-row-last">
 					<input type="submit" name="register" class="register" value="Register">

@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\ProvinsiController;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Provinsi;
 use App\Models\Rw;
+use App\Models\Kelurahan;
+use App\Models\Kecamatan;
+use App\Models\kota;
 use App\Models\Kasus;
 
 /*
@@ -39,3 +42,9 @@ Route::get('perdays',[ApiController::class, 'day']);
 Route::get('alldata', [ApiController::class, 'all']);
 // Lihat Data Berdasarkan ID
 Route::get('view/{id?}', [ApiController::class, 'show']);
+// Data RW
+Route::get('rw', [ApiController::class, 'rw']);
+
+Route::get('kota', [ApiController::class, 'kota']);
+Route::get('kelurahan', [ApiController::class, 'kelurahan']);
+Route::get('kecamatan', [ApiController::class, 'kecamatan']);

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Provinsi;
 use App\Models\Rw;
 use App\Models\Kasus;
+use App\Models\kelurahan;
+use App\Models\Kecamatan;
+use App\Models\Kota;
 use DB;
 use Carbon\Carbon;
 
@@ -71,6 +74,35 @@ class ApiController extends Controller
             ], 200);
     }
 
+    // Rekap Semua Data Kasus Provinsi
+    public function all()
+    {
+        $positif = DB::table('rws')
+              ->select('kasuses.jumlah_sembuh',
+              'kasuses.jumlah_positif','kasuses.jumlah_meninggal')
+              ->join('kasuses','rws.id','=','kasuses.id_rw')
+              ->sum('kasuses.jumlah_positif');
+        $sembuh = DB::table('rws')
+              ->select('kasuses.jumlah_sembuh',
+              'kasuses.jumlah_positif','kasuses.jumlah_meninggal')
+              ->join('kasuses','rws.id','=','kasuses.id_rw')
+              ->sum('kasuses.jumlah_sembuh');
+        $meninggal = DB::table('rws')
+              ->select('kasuses.jumlah_sembuh',
+              'kasuses.jumlah_positif','kasuses.jumlah_meninggal')
+              ->join('kasuses','rws.id','=','kasuses.id_rw')
+              ->sum('kasuses.jumlah_meninggal');
+
+            return response([
+                'success' => true,
+                'data' => 'Data Indonesia',
+                          'Jumlah Positif'   => $positif,
+                          'Jumlah Sembuh'    => $sembuh,
+                          'Jumlah Meninggal' => $meninggal,        
+                'message' => 'Berhasil'
+            ], 200);
+    }
+
     // List Semua Data
     public function index()
     {
@@ -89,7 +121,7 @@ class ApiController extends Controller
             return response()->json($provinsi, 200);    
     }
 
-    // Show Data
+    // Show Data Berdasarkan Provinsi
     public function show($id)
         {
         $provinsi = Provinsi::findOrFail($id);
@@ -129,32 +161,107 @@ class ApiController extends Controller
                 ], 200);
         }
 
-    // Rekap Semua Data Kasus Provinsi
-    public function all()
+    
+    // Data RW
+    public function rw()
     {
-        $positif = DB::table('rws')
-              ->select('kasuses.jumlah_sembuh',
-              'kasuses.jumlah_positif','kasuses.jumlah_meninggal')
-              ->join('kasuses','rws.id','=','kasuses.id_rw')
-              ->sum('kasuses.jumlah_positif');
-        $sembuh = DB::table('rws')
-              ->select('kasuses.jumlah_sembuh',
-              'kasuses.jumlah_positif','kasuses.jumlah_meninggal')
-              ->join('kasuses','rws.id','=','kasuses.id_rw')
-              ->sum('kasuses.jumlah_sembuh');
-        $meninggal = DB::table('rws')
-              ->select('kasuses.jumlah_sembuh',
-              'kasuses.jumlah_positif','kasuses.jumlah_meninggal')
-              ->join('kasuses','rws.id','=','kasuses.id_rw')
-              ->sum('kasuses.jumlah_meninggal');
+        $rw = DB::table('kasuses')
+                ->select([
+                    DB::raw('SUM(jumlah_positif) as jumlah_positif'),
+                    DB::raw('SUM(jumlah_sembuh) as jumlah_sembuh'),
+                    DB::raw('SUM(jumlah_meninggal) as jumlah_meninggal'),
+                ])
+                ->groupBy('tanggal')->get();
 
-            return response([
+        $positif = DB::table('rws')
+                ->select('kasuses.jumlah_positif',
+                'kasuses.jumlah_sembuh','kasuses.jumlah_meninggal')
+                ->join('kasuses','rws.id','=','kasuses.id_rw')
+                ->sum('kasuses.jumlah_positif');
+        $sembuh = DB::table('rws')
+                ->select('kasuses.jumlah_positif',
+                'kasuses.jumlah_sembuh','kasuses.jumlah_meninggal')
+                ->join('kasuses','rws.id','=','kasuses.id_rw')
+                ->sum('kasuses.jumlah_sembuh');
+        $meninggal = DB::table('rws')
+                ->select('kasuses.jumlah_positif',
+                'kasuses.jumlah_sembuh','kasuses.jumlah_meninggal')
+                ->join('kasuses','rws.id','=','kasuses.id_rw')
+                ->sum('kasuses.jumlah_meninggal');
+
+             return response([
                 'success' => true,
-                'data' => 'Data Indonesia',
-                          'Jumlah Positif'   => $positif,
-                          'Jumlah Sembuh'    => $sembuh,
-                          'Jumlah Meninggal' => $meninggal,        
+                'data' => ['Hari Ini' => $rw,
+                          ],
+                'Total' => ['Jumlah Positif'   => $positif,
+                            'Jumlah Sembuh'    => $sembuh,
+                            'Jumlah Meninggal' => $meninggal,
+                          ],
                 'message' => 'Berhasil'
             ], 200);
     }
+
+    // Data Kelurahan
+    public function kelurahan()
+    {
+        $kelurahan = DB::table('kelurahans')
+        ->select('kecamatans.nama_kecamatan','kelurahans.kode_kelurahan','kelurahans.nama_kelurahan',
+            DB::raw('SUM(kasuses.jumlah_positif) as jumlah_positif'),
+            DB::raw('SUM(kasuses.jumlah_sembuh) as jumlah_sembuh'),
+            DB::raw('SUM(kasuses.jumlah_meninggal) as jumlah_meninggal'))
+                ->join('kecamatans','kecamatans.id','=','kelurahans.id_kecamatan')
+                ->join('rws','kelurahans.id','=','rws.id_kelurahan')
+                ->join('kasuses','rws.id','=','kasuses.id_rw')
+        ->groupBy('kelurahans.id')->get();
+
+        return response([
+            'success' => true,
+            'data'    => $kelurahan,
+            'message' => 'Berhasil'
+        ], 200);
+    }
+
+    // Data Kecamatan
+    public function kecamatan()
+    {
+        $kecamatan = DB::table('kecamatans')
+        ->select('kotas.nama_kota','kecamatans.kode_kecamatan','kecamatans.nama_kecamatan',
+            DB::raw('SUM(kasuses.jumlah_positif) as jumlah_positif'),
+            DB::raw('SUM(kasuses.jumlah_sembuh) as jumlah_sembuh'),
+            DB::raw('SUM(kasuses.jumlah_meninggal) as jumlah_meninggal'))
+                ->join('kotas','kotas.id','=','kecamatans.id_kota')
+                ->join('kelurahans','kecamatans.id','=','kelurahans.id_kecamatan')
+                ->join('rws','kelurahans.id','=','rws.id_kelurahan')
+                ->join('kasuses','rws.id','=','kasuses.id_rw')
+        ->groupBy('kotas.id')->get();
+
+        return response([
+            'success' => true,
+            'data' => $kecamatan,
+            'message' => 'Berhasil'
+        ], 200);
+    }
+
+    // Data Kota
+    public function kota()
+    {
+        $kota = DB::table('kotas')
+        ->select('provinsis.nama_provinsi','kotas.kode_kota','kotas.nama_kota',
+            DB::raw('SUM(kasuses.jumlah_positif) as jumlah_positif'),
+            DB::raw('SUM(kasuses.jumlah_sembuh) as jumlah_sembuh'),
+            DB::raw('SUM(kasuses.jumlah_meninggal) as jumlah_meninggal'))
+                ->join('provinsis','provinsis.id','=','kotas.id_provinsi')
+                ->join('kecamatans','kotas.id','=','kecamatans.id_kota')
+                ->join('kelurahans','kecamatans.id','=','kelurahans.id_kecamatan')
+                ->join('rws','kelurahans.id','=','rws.id_kelurahan')
+                ->join('kasuses','rws.id','=','kasuses.id_rw')
+            ->groupBy('kotas.id')->get();
+
+        return response([
+            'success' => true,
+            'data' => $kota,
+            'message' => 'Berhasil'
+        ], 200);
+    }
+
 }
