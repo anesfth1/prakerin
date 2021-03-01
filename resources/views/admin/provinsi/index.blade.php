@@ -3,7 +3,6 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card">
                 <div class="card-body">
                     @if (session('succes'))
                         <div class="alert alert-success" role="alert">
@@ -11,7 +10,7 @@
                         </div>
                     @endif
                     <div class="card">
-                        <div class="card-header">Provinsi
+                        <div class="card-header">PROVINSI
                                 <a href="{{route('provinsi.create')}}" class="float-right btn btn-primary">Tambah Data</a>
                         </div>   
                             <div class="row">
@@ -21,28 +20,30 @@
                                             <table id="example1" class="table table-bordered table-striped">
                                                 <thead>
                                                 <tr>
-                                                    <td>No</td>
-                                                    <td>Kode Provinsi</td>
-                                                    <td>Nama Provinsi</td>
+                                                    <th class=>No</th>
+                                                    <th>Kode Provinsi</th>
+                                                    <th>Nama provinsi</th>
+                                                    <th>
+                                                       <center>Action</center>
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @php $no = 1; @endphp
+                                                @foreach ($provinsi as $item)
+                                                <tr>
+                                                    <th class="text"> {{$no++}}</th>
+                                                    <th>{{$item->kode_provinsi}}</th>
+                                                    <th>{{$item->nama_provinsi}}</th>
                                                     <td>
-                                                       <center>Aksi</center>
-                                                    </td>
-                                                    </tr>
-                                                    @php $no = 1; @endphp
-                                                    @foreach($provinsi as $data)
-                                                    <tr>
-                                                    <td>{{$no}}</td>
-                                                    <td>{{$data->kode_provinsi}}</td>
-                                                    <td>{{$data->nama_provinsi}}</td>
-                                                    <td>
-                                                        <form action="{{route('provinsi.destroy', $data->id)}}" method="POST">
+                                                        <form action="{{route('provinsi.destroy', $item->id)}}" method="POST">
                                                             @csrf @method('delete')
-                                                            <a href="{{route('provinsi.edit', $data->id)}}" class="btn btn-warning btn-small fay fay-eye">Edit</a>
+                                                            <a href="{{route('provinsi.edit', $item->id)}}" class="btn btn-success btn-small fay fay-eye">Edit</a>
                                                             <button type="submit" class="btn btn-danger btn-small fay fay-trash" onclick="return confirm('Apakah Data Yakin Dihapus?')">Delete</button>
                                                         </form>
                                                     </td>
                                                 </tr>
-                                                @endforeach
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                      </div>
@@ -51,7 +52,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

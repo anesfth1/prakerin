@@ -38,13 +38,10 @@ class KelurahanController extends Controller
      */
     public function store(Request $request)
     {
-        $pesan=['kode_kelurahan.required' => 'kelurahan Harus Diisi','kode_kelurahan.max' => 'Variable Huruf Melebihin Maksimal!!','kode_kelurahan.unique'=>'Data Sudah Terdaftar!!'];
-        $this->validate($request,[ 'kode_kelurahan' => 'required|max:50|unique:kelurahans'],$pesan);
         $pesan=['nama_kelurahan.required' => 'kelurahan Harus Diisi','nama_kelurahan.max' => 'Variable Huruf Melebihin Maksimal!!','nama_kelurahan.unique'=>'Data Sudah Terdaftar!!'];
         $this->validate($request,[ 'nama_kelurahan' => 'required|max:50|unique:kelurahans'],$pesan);
         $kelurahan = new Kelurahan();
         $kelurahan->id_kecamatan = $request->id_kecamatan;
-        $kelurahan->kode_kelurahan = $request->kode_kelurahan;
         $kelurahan->nama_kelurahan = $request->nama_kelurahan;
         $kelurahan->save();
         return redirect()->route('kelurahan.index')->with(['succes'=>'Data Berhasil Di Tambah']);

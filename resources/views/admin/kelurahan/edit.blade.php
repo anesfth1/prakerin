@@ -20,10 +20,6 @@
                                         </select>
                                     </div>
                                     <div class="from-group">
-                                        <label for="">Kode kelurahan</label>
-                                            <input type="text" name="kode_kelurahan" value="{{$kelurahan->kode_kelurahan}}" class="form-control" >
-                                    </div>
-                                    <div class="from-group">
                                         <label for="">Nama kelurahan</label>
                                             <input type="text" name="nama_kelurahan" value="{{$kelurahan->nama_kelurahan}}" class="form-control" >
                                     </div>

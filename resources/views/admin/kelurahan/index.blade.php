@@ -45,7 +45,6 @@ active
                                                           <form action="{{route('kelurahan.destroy', $item->id)}}" method="POST">
                                                                 @csrf @method('delete')
                                                                 <a href="{{route('kelurahan.edit', $item->id)}}" class="btn btn-warning btn-small fay fay-eye">Edit</a>
-                                                                <a href="{{route('kelurahan.show', $item->id)}}" class="btn btn-success btn-small fay fay-eye">Show</a>
                                                                 <button type="submit" class="btn btn-danger btn-small fay fay-trash" onclick="return confirm('Apakah Data Yakin Dihapus?')">Delete</button>
                                                           </form>
                                                         </td>

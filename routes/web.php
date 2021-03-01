@@ -7,6 +7,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\RwController;
 use App\Http\Controllers\KasusController;
+use App\Http\Controllers\FrontendController;
 
 
 /*
@@ -27,6 +28,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('/', FrontendController::class);
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function (){
      Route::resource('provinsi', ProvinsiController::class);

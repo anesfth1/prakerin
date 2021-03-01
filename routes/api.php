@@ -33,18 +33,18 @@ Route::get('provinsi/{id?}', [ProvinsiController::class, 'show']);
 Route::put('provinsi/update/{id?}',[ProvinsiController::class, 'update']);
 Route::delete('provinsi/{id?}',[ProvinsiController::class, 'destroy']);
 
-// API
-// index
-Route::get('index', [ApiController::class, 'index']);
-// Rekap Perhari
-Route::get('perdays',[ApiController::class, 'day']);
-// Rekap Semua Provinsi
+// API Global 
+Route::get('/global', [ApiController::class, 'global']);
+// API Negara
+Route::get('perdays', [ApiController::class, 'day']);
 Route::get('alldata', [ApiController::class, 'all']);
-// Lihat Data Berdasarkan ID
 Route::get('view/{id?}', [ApiController::class, 'show']);
-// Data RW
-Route::get('rw', [ApiController::class, 'rw']);
-
+Route::get('index', [ApiController::class, 'provinsi']);
 Route::get('kota', [ApiController::class, 'kota']);
-Route::get('kelurahan', [ApiController::class, 'kelurahan']);
+Route::get('viewkota/{id?}', [ApiController::class, 'showkota']);
 Route::get('kecamatan', [ApiController::class, 'kecamatan']);
+Route::get('viewkecamatan/{id?}', [ApiController::class, 'showkec']);
+Route::get('kelurahan', [ApiController::class, 'kelurahan']);
+Route::get('viewkelurahan/{id?}', [ApiController::class, 'showkel']);
+Route::get('rw', [ApiController::class, 'rw']);
+Route::get('viewrw/{id?}', [ApiController::class, 'showrw']);
